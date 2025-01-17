@@ -175,7 +175,7 @@ export default function Home() {
             rel="noopener noreferrer"
             className="text-blue-600 hover:text-blue-800 font-medium"
           >
-            GitHub: @iterating
+            Designed and Built by Jonathan Young (iterating)
           </a>
         </div>
       </footer>
