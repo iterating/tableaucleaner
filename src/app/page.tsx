@@ -135,7 +135,7 @@ export default function Home() {
                 rules={cleaningRules}
                 onRulesChange={handleRulesChange}
               />
-              <RulesList rules={rules} onAddRule={addRule} />
+              <RulesList rules={rules} dataset={dataset} onAddRule={addRule} />
               <div className="mt-4 space-x-4">
                 <button
                   onClick={() => handleExport('csv')}
