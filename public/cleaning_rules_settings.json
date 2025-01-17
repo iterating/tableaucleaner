@@ -1,0 +1,64 @@
+{
+  "cleaningRules": {
+    "removeDuplicates": {
+      "enabled": true,
+      "columns": ["all"]
+    },
+    "handleMissingValues": {
+      "enabled": true,
+      "method": "mean",
+      "columns": ["all"]
+    },
+    "normalizeBloodSugarLevels": {
+      "enabled": true,
+      "minValue": 70,
+      "maxValue": 180
+    },
+    "standardizeDiagnosisCodes": {
+      "enabled": true,
+      "format": "ICD-10"
+    },
+    "filterRecords": {
+      "enabled": true,
+      "conditions": {
+        "age": {
+          "min": 0,
+          "max": 120
+        },
+        "bloodSugar": {
+          "min": 0,
+          "max": 500
+        }
+      }
+    },
+    "convertDateFormats": {
+      "enabled": true,
+      "format": "YYYY-MM-DD",
+      "columns": ["date", "admission_date", "discharge_date"]
+    },
+    "trimWhitespace": {
+      "enabled": true,
+      "columns": ["all"]
+    },
+    "categorizeAge": {
+      "enabled": true,
+      "ranges": [
+        {"min": 0, "max": 12, "label": "Child"},
+        {"min": 13, "max": 19, "label": "Teen"},
+        {"min": 20, "max": 39, "label": "Young Adult"},
+        {"min": 40, "max": 59, "label": "Adult"},
+        {"min": 60, "max": 999, "label": "Senior"}
+      ]
+    },
+    "customRegexReplacements": {
+      "enabled": true,
+      "patterns": [
+        {
+          "pattern": "\\s+",
+          "replacement": " ",
+          "columns": ["all"]
+        }
+      ]
+    }
+  }
+}
