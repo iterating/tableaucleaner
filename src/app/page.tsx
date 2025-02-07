@@ -6,6 +6,9 @@ import { FileUpload } from '@/components/FileUpload';
 import DataPreview from '@/components/DataPreview';
 import { RulesList } from '@/components/RulesList';
 import CleaningRulesConfig from '@/components/CleaningRulesConfig';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/utils/utils';
+
 
 export default function Home() {
   const [dataset, setDataset] = useState<TableauDataset | null>(null);
@@ -110,9 +113,9 @@ export default function Home() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="min-h-screen bg-zinc-900 text-white-100">
       <main className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-8">Tableau Data Cleaner</h1>
+        <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent mb-8">Tableau Data Cleaner</h1>
 
         <FileUpload onUpload={handleFileUpload} isProcessing={isProcessing} />
 
@@ -130,55 +133,66 @@ export default function Home() {
 
         {dataset && cleaningRules && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div>
+            <div className="bg-zinc-800 rounded-lg p-6 shadow-lg">
               <CleaningRulesConfig
                 rules={cleaningRules}
                 onRulesChange={handleRulesChange}
               />
               <RulesList rules={rules} dataset={dataset} onAddRule={addRule} />
               <div className="mt-4 space-x-4">
-                <button
+                <Button
                   onClick={() => handleExport('csv')}
-                  className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                  disabled={isProcessing}
+                  variant="secondary"
+                  size="sm"
+                  disabled={isProcessing || !dataset}
                 >
                   Export CSV
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={() => handleExport('json')}
-                  className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-                  disabled={isProcessing}
+                  variant="secondary"
+                  size="sm"
+                  disabled={isProcessing || !dataset}
                 >
                   Export JSON
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={() => handleExport('tableau')}
-                  className="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600"
-                  disabled={isProcessing}
+                  variant="secondary"
+                  size="sm"
+                  disabled={isProcessing || !dataset}
                 >
                   Export Tableau
-                </button>
+                </Button>
               </div>
             </div>
-            <div>
+            <div className="bg-zinc-800 rounded-lg p-6 shadow-lg">
               <DataPreview dataset={dataset} cleaningRules={cleaningRules} />
             </div>
           </div>
         )}
       </main>
 
-      <footer className="fixed bottom-0 w-full bg-gray-100 border-t border-gray-200 py-4">
-        <div className="container mx-auto px-4 text-center">
-          <a 
-            href="https://github.com/iterating" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="text-blue-600 hover:text-blue-800 font-medium"
-          >
-            Designed and Built by Jonathan Young (iterating)
-          </a>
-        </div>
-      </footer>
+      <footer className="fixed bottom-0 w-full bg-zinc-800 border-t border-zinc-700 py-4">
+  <div className="container mx-auto px-4 text-center">
+    <a 
+      href="https://github.com/iterating" 
+      target="_blank" 
+      rel="noopener noreferrer"
+      className="text-zinc-300 hover:text-zinc-100 transition-colors text-sm mr-2"
+    >
+      Designed and Built by Jonathan Young (iterating)
+    </a>
+    <a 
+      href="https://querybuilder.vercel.app/" 
+      target="_blank" 
+      rel="noopener noreferrer"
+      className="text-zinc-300 hover:text-zinc-100 transition-colors text-sm"
+    >
+      Query Builder Sandbox App
+    </a>
+  </div>
+</footer>
     </div>
   );
 }

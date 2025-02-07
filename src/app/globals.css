@@ -7,11 +7,12 @@ body {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
-    background-color: #f5f5f5;
+    background-color: #09090b;
+    color: #fafafa;
 }
 
 .container {
-    background-color: white;
+    background-color: #18181b;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -29,7 +30,7 @@ label {
     display: block;
     margin-bottom: 5px;
     font-weight: bold;
-    color: #333;
+    color: white;
 }
 
 input[type="file"] {
@@ -51,7 +52,7 @@ button {
 }
 
 button:hover {
-    background-color: #0056b3;
+    filter: brightness(90%);
 }
 
 .preview-table {
@@ -61,28 +62,28 @@ button:hover {
 }
 
 .preview-table th {
-    background-color: #f8f9fa;
+    background-color: #27272a;
     padding: 12px;
-    border: 1px solid #dee2e6;
+    border: 1px solid #3f3f46;
     font-weight: 600;
     text-align: left;
 }
 
 .preview-table td {
     padding: 12px;
-    border: 1px solid #dee2e6;
+    border: 1px solid #3f3f46;
 }
 
 .preview-table tr:nth-child(even) {
-    background-color: #f8f9fa;
+    background-color: #27272a;
 }
 
 .rule-item {
     padding: 12px;
-    border: 1px solid #dee2e6;
+    border: 1px solid #3f3f46;
     margin-bottom: 10px;
     border-radius: 4px;
-    background-color: #f8f9fa;
+    background-color: #27272a;
 }
 
 .export-buttons {
@@ -96,7 +97,7 @@ button:hover {
 }
 
 .info-text {
-    color: #666;
+    color: #a1a1aa;
     font-size: 0.9em;
     margin-top: 4px;
 }

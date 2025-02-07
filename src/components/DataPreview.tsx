@@ -15,20 +15,22 @@ const DataPreview: React.FC<DataPreviewProps> = ({ dataset, cleaningRules }) => 
   }, [dataset, cleaningRules]);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div className="text-white-100">Loading...</div>;
   }
 
   return (
-    <div className="preview-section">
-      <h2 className="text-2xl font-semibold mb-4">Data Preview</h2>
+    <div className="bg-muted/50 rounded-lg p-4 border">
+      <h2 className="text-base font-medium mb-3">
+      <span className="w-2 h-6 bg-blue-500 rounded mr-2"></span>
+      Data Preview</h2>
       <div className="overflow-x-auto">
-        <table className="min-w-full bg-white border border-gray-300">
+        <table className="min-w-full bg-background border">
           <thead>
             <tr>
               {dataset.headers.map((header) => (
                 <th
                   key={header}
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b"
+                  className="px-4 py-2 text-left text-sm font-medium text-muted-foreground border-b"
                 >
                   {header}
                 </th>
@@ -39,12 +41,12 @@ const DataPreview: React.FC<DataPreviewProps> = ({ dataset, cleaningRules }) => 
             {dataset.rows.slice(0, 5).map((row, rowIndex) => (
               <tr
                 key={rowIndex}
-                className={rowIndex % 2 === 0 ? 'bg-gray-50' : 'bg-white'}
+                className="hover:bg-muted/20 border-b"
               >
                 {dataset.headers.map((header) => (
                   <td
                     key={`${rowIndex}-${header}`}
-                    className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 border-b"
+                    className="px-4 py-2 text-sm whitespace-nowrap"
                   >
                     {row[header]?.toString() || ''}
                   </td>
@@ -53,12 +55,11 @@ const DataPreview: React.FC<DataPreviewProps> = ({ dataset, cleaningRules }) => 
             ))}
           </tbody>
         </table>
-        <div className="mt-2 text-sm text-gray-500">
+        <div className="mt-2 text-sm text-muted-foreground">
           Showing first 5 rows of {dataset.metadata.rowCount} total rows
         </div>
       </div>
     </div>
-  );
-};
-
+  )
+}
 export default DataPreview;

@@ -18,7 +18,7 @@ export interface TableauDataset {
 export interface CleaningRule {
   id: string;
   field: string;
-  operation: 'trim' | 'replace' | 'remove_nulls' | 'convert_type' | 'rename' | 'categorize';
+  operation: 'trim' | 'replace' | 'remove_nulls' | 'convert_type' | 'rename' | 'categorize' | 'handleMissingValues';
   parameters: Record<string, any>;
 }
 

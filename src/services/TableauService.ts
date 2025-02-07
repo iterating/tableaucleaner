@@ -1,5 +1,5 @@
 import { FileRepository } from '@/infrastructure/repositories/FileRepository';
-import { DataCleaningService } from '@/application/services/DataCleaningService';
+import { DataCleaningService } from '@/services/DataCleaningService';
 import { TableauDataset, TableauRow, CleaningRule } from '@/domain/entities/TableauData';
 import Papa from 'papaparse';
 
