@@ -1,64 +1,150 @@
 {
   "cleaningRules": {
     "removeDuplicates": {
-      "enabled": true,
-      "columns": ["all"]
+      "type": "deduplication",
+      "enabled": false,
+      "parameters": {
+        "columns": {
+          "type": "array",
+          "required": true
+        }
+      },
+      "columns": []
     },
     "handleMissingValues": {
-      "enabled": true,
+      "type": "missing_values",
+      "enabled": false,
+      "parameters": {
+        "method": {
+          "type": "string",
+          "options": ["mean", "median", "mode"]
+        },
+        "columns": {
+          "type": "array",
+          "required": true
+        }
+      },
       "method": "mean",
-      "columns": ["all"]
+      "columns": []
     },
     "normalizeBloodSugarLevels": {
-      "enabled": true,
+      "type": "normalization",
+      "enabled": false,
+      "parameters": {
+        "minValue": {
+          "type": "number",
+          "required": true
+        },
+        "maxValue": {
+          "type": "number",
+          "required": true
+        }
+      },
       "minValue": 70,
       "maxValue": 180
     },
     "standardizeDiagnosisCodes": {
-      "enabled": true,
+      "enabled": false,
+      "parameters": {
+        "format": {
+          "type": "string",
+          "options": ["ICD-10", "ICD-9"]
+        }
+      },
       "format": "ICD-10"
     },
-    "filterRecords": {
-      "enabled": true,
-      "conditions": {
+    "filterOutUnwantedRecords": {
+      "enabled": false,
+      "parameters": {
+        "criteria": {
+          "type": "object",
+          "properties": {
+            "age": {
+              "type": "object",
+              "properties": {
+                "min": {
+                  "type": "number"
+                },
+                "max": {
+                  "type": "number"
+                }
+              }
+            },
+            "bloodSugarLevel": {
+              "type": "object",
+              "properties": {
+                "max": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        }
+      },
+      "criteria": {
         "age": {
           "min": 0,
           "max": 120
         },
-        "bloodSugar": {
-          "min": 0,
-          "max": 500
+        "bloodSugarLevel": {
+          "max": 300
         }
       }
     },
     "convertDateFormats": {
-      "enabled": true,
-      "format": "YYYY-MM-DD",
-      "columns": ["date", "admission_date", "discharge_date"]
+      "enabled": false,
+      "parameters": {
+        "format": {
+          "type": "string",
+          "options": ["yyyy-MM-dd", "MM/dd/yyyy"]
+        }
+      },
+      "format": "yyyy-MM-dd"
     },
     "trimWhitespace": {
-      "enabled": true,
-      "columns": ["all"]
-    },
-    "categorizeAge": {
-      "enabled": true,
-      "ranges": [
-        {"min": 0, "max": 12, "label": "Child"},
-        {"min": 13, "max": 19, "label": "Teen"},
-        {"min": 20, "max": 39, "label": "Young Adult"},
-        {"min": 40, "max": 59, "label": "Adult"},
-        {"min": 60, "max": 999, "label": "Senior"}
-      ]
-    },
-    "customRegexReplacements": {
-      "enabled": true,
-      "patterns": [
-        {
-          "pattern": "\\s+",
-          "replacement": " ",
-          "columns": ["all"]
+      "enabled": false,
+      "parameters": {
+        "fields": {
+          "type": "array",
+          "required": true
         }
-      ]
+      },
+      "fields": []
+    },
+    "categorizeAgeGroups": {
+      "enabled": false,
+      "parameters": {
+        "ageRanges": {
+          "type": "array",
+          "required": true
+        }
+      },
+      "ageRanges": []
+    },
+    "customRegexReplacement": {
+      "enabled": false,
+      "parameters": {
+        "pattern": {
+          "type": "string",
+          "required": true
+        },
+        "replacement": {
+          "type": "string",
+          "required": true
+        }
+      },
+      "pattern": "",
+      "replacement": ""
+    },
+    "logCleaningActions": {
+      "enabled": false,
+      "parameters": {
+        "logFormat": {
+          "type": "string",
+          "options": ["text", "json"]
+        }
+      },
+      "logFormat": "text"
     }
   }
 }

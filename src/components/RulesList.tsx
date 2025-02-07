@@ -1,5 +1,16 @@
-import { CleaningRule, TableauDataset } from '@/domain/entities/TableauData';
+import { TableauDataset } from '@/domain/entities/TableauData';
 import { Button } from './ui/button';
+import { useState } from 'react';
+import { RuleConfigurationModal } from './RuleConfigurationModal'; 
+import settings from '../../public/cleaning_rules_settings.json';
+
+interface CleaningRule {
+  id: string;
+  type: string;
+  field: string;
+  operation: string;
+  parameters: Record<string, any>;
+}
 
 interface RulesListProps {
   rules: CleaningRule[];
@@ -8,6 +19,19 @@ interface RulesListProps {
 }
 
 export function RulesList({ rules, dataset, onAddRule }: RulesListProps) {
+  const [showConfigModal, setShowConfigModal] = useState(false);
+  const [selectedRuleType, setSelectedRuleType] = useState<string>('');
+
+  const handleAddRule = (config: any) => {
+    onAddRule({
+      id: String(Date.now()),
+      type: selectedRuleType,
+      field: dataset.headers[0],
+      operation: config.operation,
+      parameters: config.parameters
+    });
+  };
+
   return (
     <div className="bg-muted/50 p-4 rounded-lg border">
       <h2 className="text-2xl font-semibold mb-4">
@@ -26,19 +50,18 @@ export function RulesList({ rules, dataset, onAddRule }: RulesListProps) {
         ))}
       </ul>
       <Button
-        onClick={() => {
-          if (!dataset.headers?.length) return;
-          onAddRule({
-            id: String(Date.now()),
-            field: dataset.headers[0],
-            operation: 'trim',
-            parameters: {}
-          })
-        }}
+        onClick={() => setShowConfigModal(true)}
         className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
       >
         Add Rule
       </Button>
+      {showConfigModal && (
+        <RuleConfigurationModal
+          ruleTypes={Object.keys(settings.cleaningRules)}
+          onConfigure={handleAddRule}
+          onClose={() => setShowConfigModal(false)}
+        />
+      )}
     </div>
   );
 }

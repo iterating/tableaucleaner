@@ -1,6 +1,8 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { TableauDataset, CleaningRules } from '@/domain/entities/TableauData';
+import { TableauDataset } from '@/domain/entities/TableauData';
+import { CleaningRules } from '@/utils/cleaningRules';
+
 
 interface DataPreviewProps {
   dataset: TableauDataset;
@@ -38,7 +40,7 @@ const DataPreview: React.FC<DataPreviewProps> = ({ dataset, cleaningRules }) => 
             </tr>
           </thead>
           <tbody>
-            {dataset.rows.slice(0, 5).map((row, rowIndex) => (
+            {dataset.rows.slice(0, 10).map((row, rowIndex) => (
               <tr
                 key={rowIndex}
                 className="hover:bg-muted/20 border-b"
@@ -56,7 +58,7 @@ const DataPreview: React.FC<DataPreviewProps> = ({ dataset, cleaningRules }) => 
           </tbody>
         </table>
         <div className="mt-2 text-sm text-muted-foreground">
-          Showing first 5 rows of {dataset.metadata.rowCount} total rows
+          Showing first 10 rows of {dataset.metadata.rowCount} total rows
         </div>
       </div>
     </div>

@@ -1,4 +1,6 @@
 import { format } from 'date-fns';
+import { TableauDataset } from '@/domain/entities/TableauData';
+import { CleaningRule, CleaningOperationType } from '@/types';
 
 export interface CleaningRules {
   cleaningRules: {
@@ -15,10 +17,6 @@ export interface CleaningRules {
       enabled: boolean;
       minValue: number;
       maxValue: number;
-    };
-    standardizeDiagnosisCodes: {
-      enabled: boolean;
-      format: string;
     };
     filterOutUnwantedRecords: {
       enabled: boolean;
@@ -193,92 +191,36 @@ export const logCleaningAction = (action: string, format: string = 'text'): void
   console.log(logEntry);
 };
 
-export const applyCleaningRules = (data: DataRow[], rules: CleaningRules): DataRow[] => {
-  let cleanedData = [...data];
-  const { cleaningRules } = rules;
-
-  if (cleaningRules.logCleaningActions.enabled) {
-    logCleaningAction('Starting data cleaning process', cleaningRules.logCleaningActions.logFormat);
-  }
-
-  if (cleaningRules.removeDuplicates.enabled) {
-    cleanedData = removeDuplicates(cleanedData, cleaningRules.removeDuplicates.columns);
-    if (cleaningRules.logCleaningActions.enabled) {
-      logCleaningAction('Removed duplicates', cleaningRules.logCleaningActions.logFormat);
+export function applyCleaningRules(dataset: TableauDataset, rules: CleaningRule[]): TableauDataset {
+  let cleanedData = { ...dataset };
+  
+  rules.forEach(rule => {
+    switch(rule.operation) {
+      case 'replace':
+        // Handle replace operation
+        break;
+      case 'trim':
+        // Handle trim operation
+        break;
+      case 'remove_nulls':
+        // Handle remove nulls operation
+        break;
+      case 'convert_type':
+        // Handle convert type operation
+        break;
+      case 'rename':
+        // Handle rename operation
+        break;
+      case 'categorize':
+        // Handle categorize operation
+        break;
+      case 'handleMissingValues':
+        // Handle missing values operation
+        break;
+      default:
+        break;
     }
-  }
-
-  if (cleaningRules.handleMissingValues.enabled) {
-    handleMissingValues(
-      cleanedData,
-      cleaningRules.handleMissingValues.method,
-      cleaningRules.handleMissingValues.columns
-    );
-    if (cleaningRules.logCleaningActions.enabled) {
-      logCleaningAction('Handled missing values', cleaningRules.logCleaningActions.logFormat);
-    }
-  }
-
-  if (cleaningRules.normalizeBloodSugarLevels.enabled) {
-    normalizeBloodSugarLevels(
-      cleanedData,
-      cleaningRules.normalizeBloodSugarLevels.minValue,
-      cleaningRules.normalizeBloodSugarLevels.maxValue
-    );
-    if (cleaningRules.logCleaningActions.enabled) {
-      logCleaningAction('Normalized blood sugar levels', cleaningRules.logCleaningActions.logFormat);
-    }
-  }
-
-  if (cleaningRules.standardizeDiagnosisCodes.enabled) {
-    standardizeDiagnosisCodes(cleanedData);
-    if (cleaningRules.logCleaningActions.enabled) {
-      logCleaningAction('Standardized diagnosis codes', cleaningRules.logCleaningActions.logFormat);
-    }
-  }
-
-  if (cleaningRules.filterOutUnwantedRecords.enabled) {
-    cleanedData = filterOutUnwantedRecords(cleanedData, cleaningRules.filterOutUnwantedRecords.criteria);
-    if (cleaningRules.logCleaningActions.enabled) {
-      logCleaningAction('Filtered out unwanted records', cleaningRules.logCleaningActions.logFormat);
-    }
-  }
-
-  if (cleaningRules.convertDateFormats.enabled) {
-    convertDateFormats(cleanedData, cleaningRules.convertDateFormats.format);
-    if (cleaningRules.logCleaningActions.enabled) {
-      logCleaningAction('Converted date formats', cleaningRules.logCleaningActions.logFormat);
-    }
-  }
-
-  if (cleaningRules.trimWhitespace.enabled) {
-    trimWhitespace(cleanedData, cleaningRules.trimWhitespace.fields);
-    if (cleaningRules.logCleaningActions.enabled) {
-      logCleaningAction('Trimmed whitespace', cleaningRules.logCleaningActions.logFormat);
-    }
-  }
-
-  if (cleaningRules.categorizeAgeGroups.enabled) {
-    categorizeAgeGroups(cleanedData, cleaningRules.categorizeAgeGroups.ageRanges);
-    if (cleaningRules.logCleaningActions.enabled) {
-      logCleaningAction('Categorized age groups', cleaningRules.logCleaningActions.logFormat);
-    }
-  }
-
-  if (cleaningRules.customRegexReplacement.enabled) {
-    customRegexReplacement(
-      cleanedData,
-      cleaningRules.customRegexReplacement.pattern,
-      cleaningRules.customRegexReplacement.replacement
-    );
-    if (cleaningRules.logCleaningActions.enabled) {
-      logCleaningAction('Applied custom regex replacement', cleaningRules.logCleaningActions.logFormat);
-    }
-  }
-
-  if (cleaningRules.logCleaningActions.enabled) {
-    logCleaningAction('Completed data cleaning process', cleaningRules.logCleaningActions.logFormat);
-  }
-
+  });
+  
   return cleanedData;
 };

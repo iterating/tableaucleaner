@@ -1,6 +1,7 @@
 import { FileRepository } from '@/infrastructure/repositories/FileRepository';
 import { DataCleaningService } from '@/services/DataCleaningService';
-import { TableauDataset, TableauRow, CleaningRule } from '@/domain/entities/TableauData';
+import { TableauDataset, TableauRow } from '@/domain/entities/TableauData';
+import { CleaningRule } from '@/types';
 import Papa from 'papaparse';
 
 class TableauService {
@@ -44,6 +45,20 @@ class TableauService {
         }
       });
     });
+  }
+
+  async getCleaningRules(): Promise<CleaningRule[]> {
+    try {
+      const response = await fetch('/cleaning_rules_settings.json');
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      return data.cleaningRules;
+    } catch (error) {
+      console.error('Error loading cleaning rules:', error);
+      throw error;
+    }
   }
 
   async cleanData(dataset: TableauDataset, rules: CleaningRule[]): Promise<TableauDataset> {

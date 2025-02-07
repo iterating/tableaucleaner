@@ -1,5 +1,6 @@
-import { TableauDataset, CleaningRule, TableauRow, AgeRange } from '@/domain/entities/TableauData';
+import { TableauDataset, TableauRow, AgeRange } from '@/domain/entities/TableauData';
 import { DataCleaningUseCase } from '@/domain/usecases/DataCleaningUseCase';
+import { CleaningRule } from '@/types';
 
 export class DataCleaningService implements DataCleaningUseCase {
   async cleanData(dataset: TableauDataset, rules: CleaningRule[]): Promise<TableauDataset> {
@@ -19,20 +20,14 @@ export class DataCleaningService implements DataCleaningUseCase {
     return dataset.headers.length > 0 && dataset.rows.length > 0;
   }
 
-  async exportData(dataset: TableauDataset, format: 'csv' | 'json'): Promise<Blob> {
-    if (format === 'json') {
-      return new Blob([JSON.stringify(dataset, null, 2)], { type: 'application/json' });
+  static async exportData(dataset: TableauDataset, format: 'csv' | 'json'): Promise<Blob> {
+    if (format === 'csv') {
+      const csv = Papa.unparse(dataset.rows);
+      return new Blob([csv], { type: 'text/csv' });
+    } else {
+      const json = JSON.stringify(dataset, null, 2);
+      return new Blob([json], { type: 'application/json' });
     }
-
-    // CSV export
-    const csvContent = [
-      dataset.headers.join(','),
-      ...dataset.rows.map(row => 
-        dataset.headers.map(header => row[header]).join(',')
-      )
-    ].join('\n');
-
-    return new Blob([csvContent], { type: 'text/csv' });
   }
 
   private validateRuleParameters(rule: CleaningRule): boolean {

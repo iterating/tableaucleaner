@@ -9,16 +9,16 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@radix-ui/react-slot": "",
+    "@radix-ui/react-dialog": "",
     "@types/node": "^20.17.14",
     "@types/papaparse": "^5.3.15",
-    "@types/react": "^18.3.18",
-    "@types/react-dom": "^18.3.5",
-    "@radix-ui/react-slot": "^1.0.1",
     "autoprefixer": "^10.4.20",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "eslint": "^8.57.1",
+    "lucide-react": "^0.453.0",
     "next": "14.0.4",
     "papaparse": "^5.5.1",
     "postcss": "^8.5.1",
@@ -32,5 +32,9 @@
   "author": {
     "name": "Jonathan Young",
     "github": "https://github.com/iterating/"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5"
   }
 }
