@@ -1,7 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { TableauDataset } from '@/domain/entities/TableauData';
-import { CleaningRule, CleaningOperationType } from '@/types';
+import { TableauDataset, CleaningRule, CleaningOperationType } from '@/types';
 import { tableauService } from '@/services/TableauService';
 import { DataCleaningService } from '@/services/DataCleaningService';
 import { FileUpload } from '@/components/FileUpload';
@@ -25,10 +24,12 @@ export default function Home() {
     const loadCleaningRules = async () => {
       try {
         const rules = await tableauService.getCleaningRules();
-        console.log('Loaded rules:', rules);
         setCleaningRules(rules);
+        setError(null);
       } catch (err) {
-        console.error('Failed loading rules:', err);
+        console.error('Error loading cleaning rules:', err);
+        setError('Error loading cleaning rules configuration. Please try refreshing the page.');
+        setCleaningRules([]);
       }
     };
 
@@ -37,20 +38,10 @@ export default function Home() {
 
   useEffect(() => {
     if (dataset && cleaningRules.length > 0) {
-      console.log('Applying cleaning rules:', cleaningRules);
       const cleaned = applyCleaningRules(dataset, cleaningRules);
-      console.log('Cleaning results:', cleaned);
       setCleanedDataset(cleaned);
-    } else {
-      setCleanedDataset(null); // Explicitly reset when conditions aren't met
     }
   }, [dataset, cleaningRules]);
-
-useEffect(() => {
-  console.log('Current dataset:', dataset);
-  console.log('Cleaned dataset:', cleanedDataset);
-}, [dataset, cleanedDataset]);
-
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -166,16 +157,10 @@ useEffect(() => {
               </div>
 
               <div className="bg-zinc-800 rounded-lg p-6 shadow-lg">
-                {(cleanedDataset || dataset) ? (
-                  <DataPreview 
-                    dataset={cleanedDataset || dataset} 
-                    cleaningRules={cleaningRules} 
-                  />
-                ) : (
-                  <div className="text-center text-muted-foreground">
-                    Upload a file to see data preview
-                  </div>
-                )}
+                <DataPreview 
+                  dataset={cleanedDataset || dataset} 
+                  cleaningRules={cleaningRules} 
+                />
               </div>
             </div>
           )}

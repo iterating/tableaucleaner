@@ -2,6 +2,7 @@ import { TableauDataset, TableauRow, AgeRange } from '@/domain/entities/TableauD
 import { DataCleaningUseCase } from '@/domain/usecases/DataCleaningUseCase';
 import { CleaningRule } from '@/types';
 import Papa from 'papaparse';
+import { validateCleaningRule } from '@/utils/validation';
 
 export class DataCleaningService implements DataCleaningUseCase {
   async cleanData(dataset: TableauDataset, rules: CleaningRule[]): Promise<TableauDataset> {
@@ -32,43 +33,7 @@ export class DataCleaningService implements DataCleaningUseCase {
   }
 
   private validateRuleParameters(rule: CleaningRule): boolean {
-    const { operation, parameters } = rule;
-    
-    switch (operation) {
-      case 'trim':
-        return true; // No parameters needed
-        
-      case 'replace':
-        return typeof parameters?.pattern === 'string' 
-          && typeof parameters?.replacement === 'string';
-        
-      case 'remove_nulls':
-        return true; // No parameters needed
-        
-      case 'convert_type':
-        return parameters?.type 
-          && ['number', 'boolean', 'string'].includes(parameters.type);
-        
-      case 'rename':
-        return typeof parameters?.newName === 'string' 
-          && parameters.newName.length > 0;
-        
-      case 'categorize':
-        return Array.isArray(parameters?.ranges) 
-          && parameters.ranges.every((range: AgeRange) => 
-            typeof range.min === 'number' 
-            && typeof range.max === 'number'
-            && typeof range.label === 'string'
-            && range.min <= range.max
-          );
-        
-      case 'handleMissingValues':
-        return parameters?.method 
-          && ['mean', 'median', 'mode'].includes(parameters.method);
-        
-      default:
-        return false;
-    }
+    return validateCleaningRule(rule);
   }
 
   private calculateMean(values: (string | number | boolean | null)[]): number {

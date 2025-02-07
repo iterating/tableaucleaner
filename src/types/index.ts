@@ -1,12 +1,36 @@
+// Export all types needed for Tableau data cleaning
 export interface CleaningRule {
   id: string;
   name: string;
-  field: string;
   operation: CleaningOperationType;
-  parameters: Record<string, any>;
   enabled: boolean;
+  parameters: Record<string, any>;
+  [key: string]: any;
 }
 
 export type CleaningOperationType = 
-  | 'replace' | 'trim' | 'remove_nulls' | 'convert_type'
-  | 'rename' | 'categorize' | 'handleMissingValues';
+  | 'trim'
+  | 'replace'
+  | 'remove_nulls'
+  | 'convert_type'
+  | 'rename'
+  | 'categorize'
+  | 'handleMissingValues'
+  | 'normalization';
+
+export interface TableauRow {
+  [key: string]: string | number | boolean | null;
+}
+
+export interface TableauMetadata {
+  fileName: string;
+  rowCount: number;
+  columnCount: number;
+  uploadDate: string;
+}
+
+export interface TableauDataset {
+  headers: string[];
+  rows: TableauRow[];
+  metadata: TableauMetadata;
+}

@@ -1,7 +1,7 @@
 import { FileRepository } from '@/infrastructure/repositories/FileRepository';
 import { DataCleaningService } from '@/services/DataCleaningService';
 import { TableauDataset, TableauRow } from '@/domain/entities/TableauData';
-import { CleaningRule } from '@/types';
+import { CleaningOperationType, CleaningRule } from '@/types';
 import Papa from 'papaparse';
 
 class TableauService {
@@ -19,18 +19,47 @@ class TableauService {
 
   async getCleaningRules(): Promise<CleaningRule[]> {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/cleaning_rules_settings.json`);
+      const response = await fetch('/cleaning_rules_settings.json');
+      
       if (!response.ok) {
         throw new Error(`Failed to load rules: ${response.status} ${response.statusText}`);
       }
-      const data = await response.json();
-      if (!data?.cleaningRules?.length) {
-        throw new Error('No cleaning rules found in settings');
+  
+      const contentType = response.headers.get('content-type');
+      if (!contentType?.includes('application/json')) {
+        throw new Error('Invalid content type - expected JSON');
       }
-      return data.cleaningRules;
+  
+      const data = await response.json();
+      
+      if (!Array.isArray(data?.cleaningRules)) {
+        throw new Error('Invalid format - cleaningRules must be an array');
+      }
+  
+      const isCleaningOperation = (op: string): boolean => {
+        return [
+          'trim',
+          'replace',
+          'remove_nulls',
+          'convert_type',
+          'rename',
+          'categorize',
+          'handleMissingValues',
+          'normalization'
+        ].includes(op);
+      };
+
+      const rawRules = data.cleaningRules.map((rule: any) => ({
+        ...rule,
+        operation: isCleaningOperation(rule.operation) ? rule.operation : 'logging',
+        enabled: rule.enabled ?? true
+      }));
+  
+      return rawRules;
+      
     } catch (error) {
       console.error('Error loading cleaning rules:', error);
-      throw error;
+      throw new Error(`Failed to load cleaning rules configuration. ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 

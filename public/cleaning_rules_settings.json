@@ -1,7 +1,9 @@
 {
-  "cleaningRules": {
-    "removeDuplicates": {
-      "type": "deduplication",
+  "cleaningRules": [
+    {
+      "id": "removeDuplicates",
+      "name": "Remove Duplicates",
+      "operation": "deduplication",
       "enabled": false,
       "parameters": {
         "columns": {
@@ -11,8 +13,10 @@
       },
       "columns": []
     },
-    "handleMissingValues": {
-      "type": "missing_values",
+    {
+      "id": "handleMissingValues",
+      "name": "Handle Missing Values",
+      "operation": "missing_values",
       "enabled": false,
       "parameters": {
         "method": {
@@ -27,23 +31,10 @@
       "method": "mean",
       "columns": []
     },
-    "normalizeBloodSugarLevels": {
-      "type": "normalization",
-      "enabled": false,
-      "parameters": {
-        "minValue": {
-          "type": "number",
-          "required": true
-        },
-        "maxValue": {
-          "type": "number",
-          "required": true
-        }
-      },
-      "minValue": 70,
-      "maxValue": 180
-    },
-    "standardizeDiagnosisCodes": {
+    {
+      "id": "standardizeDiagnosisCodes",
+      "name": "Standardize Diagnosis Codes",
+      "operation": "standardization",
       "enabled": false,
       "parameters": {
         "format": {
@@ -53,7 +44,10 @@
       },
       "format": "ICD-10"
     },
-    "filterOutUnwantedRecords": {
+    {
+      "id": "filterOutUnwantedRecords",
+      "name": "Filter Records",
+      "operation": "filtering",
       "enabled": false,
       "parameters": {
         "criteria": {
@@ -62,36 +56,28 @@
             "age": {
               "type": "object",
               "properties": {
-                "min": {
-                  "type": "number"
-                },
-                "max": {
-                  "type": "number"
-                }
+                "min": { "type": "number" },
+                "max": { "type": "number" }
               }
             },
             "bloodSugarLevel": {
               "type": "object",
               "properties": {
-                "max": {
-                  "type": "number"
-                }
+                "max": { "type": "number" }
               }
             }
           }
         }
       },
       "criteria": {
-        "age": {
-          "min": 0,
-          "max": 120
-        },
-        "bloodSugarLevel": {
-          "max": 300
-        }
+        "age": { "min": 0, "max": 120 },
+        "bloodSugarLevel": { "max": 300 }
       }
     },
-    "convertDateFormats": {
+    {
+      "id": "convertDateFormats",
+      "name": "Convert Date Formats",
+      "operation": "date_conversion",
       "enabled": false,
       "parameters": {
         "format": {
@@ -101,7 +87,10 @@
       },
       "format": "yyyy-MM-dd"
     },
-    "trimWhitespace": {
+    {
+      "id": "trimWhitespace",
+      "name": "Trim Whitespace",
+      "operation": "trimming",
       "enabled": false,
       "parameters": {
         "fields": {
@@ -111,7 +100,10 @@
       },
       "fields": []
     },
-    "categorizeAgeGroups": {
+    {
+      "id": "categorizeAgeGroups",
+      "name": "Categorize Age Groups",
+      "operation": "categorization",
       "enabled": false,
       "parameters": {
         "ageRanges": {
@@ -121,22 +113,22 @@
       },
       "ageRanges": []
     },
-    "customRegexReplacement": {
+    {
+      "id": "customRegexReplacement",
+      "name": "Regex Replacement",
+      "operation": "regex_replace",
       "enabled": false,
       "parameters": {
-        "pattern": {
-          "type": "string",
-          "required": true
-        },
-        "replacement": {
-          "type": "string",
-          "required": true
-        }
+        "pattern": { "type": "string", "required": true },
+        "replacement": { "type": "string", "required": true }
       },
       "pattern": "",
       "replacement": ""
     },
-    "logCleaningActions": {
+    {
+      "id": "logCleaningActions",
+      "name": "Log Cleaning Actions",
+      "operation": "logging",
       "enabled": false,
       "parameters": {
         "logFormat": {
@@ -146,5 +138,5 @@
       },
       "logFormat": "text"
     }
-  }
+  ]
 }
