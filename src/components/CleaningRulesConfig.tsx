@@ -1,25 +1,92 @@
 'use client';
 import React from 'react';
-import { CleaningRule, CleaningOperationType } from '@/types';
+import { CleaningRule } from '@/types';
+import { cn } from '@/utils/utils';
 
 interface CleaningRulesConfigProps {
   rules: CleaningRule[];
   onRulesChange: (rules: CleaningRule[]) => void;
 }
 
-const CleaningRulesConfig: React.FC<CleaningRulesConfigProps> = ({
-  rules,
-  onRulesChange,
-}) => {
+interface ParameterInputProps {
+  type: 'boolean' | 'number' | 'text' | 'object';
+  value: any;
+  onChange: (value: any) => void;
+  className?: string;
+}
+
+function formatValue(value: any): string {
+  if (value === null || value === undefined) {
+    return '';
+  }
+  if (Array.isArray(value)) {
+    return value.join(', ');
+  }
+  if (typeof value === 'object') {
+    return JSON.stringify(value, null, 2);
+  }
+  return String(value);
+}
+
+function ParameterInput({ type, value, onChange, className }: ParameterInputProps) {
+  switch (type) {
+    case 'boolean':
+      return (
+        <input
+          type="checkbox"
+          checked={Boolean(value)}
+          onChange={(e) => onChange(e.target.checked)}
+          className={cn("form-checkbox h-4 w-4", className)}
+        />
+      );
+    case 'number':
+      return (
+        <input
+          type="number"
+          value={value ?? ''}
+          onChange={(e) => onChange(Number(e.target.value))}
+          className={cn("w-full px-2 py-1 border rounded", className)}
+        />
+      );
+    case 'object':
+      return (
+        <textarea
+          value={formatValue(value)}
+          onChange={(e) => {
+            try {
+              const parsed = JSON.parse(e.target.value);
+              onChange(parsed);
+            } catch {
+              // If it's not valid JSON yet, store as string
+              onChange(e.target.value);
+            }
+          }}
+          className={cn("w-full px-2 py-1 border rounded font-mono text-sm", className)}
+          rows={4}
+        />
+      );
+    default:
+      return (
+        <input
+          type="text"
+          value={formatValue(value)}
+          onChange={(e) => onChange(e.target.value)}
+          className={cn("w-full px-2 py-1 border rounded", className)}
+        />
+      );
+  }
+}
+
+function CleaningRulesConfig({ rules, onRulesChange }: CleaningRulesConfigProps) {
   const handleToggleRule = (ruleId: string) => {
-    const updatedRules = rules.map(rule => 
+    const updatedRules = rules.map((rule: CleaningRule) => 
       rule.id === ruleId ? { ...rule, enabled: !rule.enabled } : rule
     );
     onRulesChange(updatedRules);
   };
 
   const handleParameterChange = (ruleId: string, paramName: string, value: any) => {
-    const updatedRules = rules.map(rule =>
+    const updatedRules = rules.map((rule: CleaningRule) =>
       rule.id === ruleId ? { 
         ...rule, 
         parameters: { ...rule.parameters, [paramName]: value } 
@@ -28,73 +95,49 @@ const CleaningRulesConfig: React.FC<CleaningRulesConfigProps> = ({
     onRulesChange(updatedRules);
   };
 
-  const getParameterInput = (rule: CleaningRule, paramName: string, value: any) => {
-    if (typeof value === 'boolean') {
-      return (
-        <input
-          type="checkbox"
-          checked={value}
-          onChange={(e) => handleParameterChange(rule.id, paramName, e.target.checked)}
-          className="rounded border-gray-300"
-        />
-      );
-    }
-
-    if (typeof value === 'number') {
-      return (
-        <input
-          type="number"
-          value={value}
-          onChange={(e) => handleParameterChange(rule.id, paramName, Number(e.target.value))}
-          className="border rounded px-2 py-1 text-sm w-24"
-        />
-      );
-    }
-
-    return (
-      <input
-        type="text"
-        value={value}
-        onChange={(e) => handleParameterChange(rule.id, paramName, e.target.value)}
-        className="border rounded px-2 py-1 text-sm flex-1"
-      />
-    );
+  const getParameterType = (value: any): 'boolean' | 'number' | 'text' | 'object' => {
+    if (typeof value === 'boolean') return 'boolean';
+    if (typeof value === 'number') return 'number';
+    if (typeof value === 'object' && value !== null) return 'object';
+    return 'text';
   };
 
   return (
     <div className="space-y-4">
       <h3 className="text-lg font-semibold mb-4">Cleaning Rules Configuration</h3>
-      {rules.map((rule) => (
+      {rules.map((rule: CleaningRule) => (
         <div key={rule.id} className="p-4 border rounded-lg bg-zinc-900">
-          <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-2">
               <input
                 type="checkbox"
                 checked={rule.enabled}
                 onChange={() => handleToggleRule(rule.id)}
-                className="rounded border-gray-300"
+                className="form-checkbox h-4 w-4"
               />
-              <span className="font-medium">{rule.name}</span>
+              <h4 className="font-medium">{rule.name}</h4>
             </div>
-            <span className="text-sm text-zinc-400">{rule.field}</span>
+            <span className="text-sm text-gray-400">{rule.operation}</span>
           </div>
-          
-          {rule.enabled && rule.parameters && (
-            <div className="mt-3 space-y-3 pl-6">
-              {Object.entries(rule.parameters).map(([paramName, value]) => (
-                <div key={paramName} className="flex items-center space-x-3">
-                  <label className="text-sm min-w-[100px]">
-                    {paramName.replace(/_/g, ' ')}:
-                  </label>
-                  {getParameterInput(rule, paramName, value)}
-                </div>
-              ))}
-            </div>
-          )}
+          <div className="space-y-4">
+            {Object.entries(rule.parameters).map(([paramName, paramValue]) => (
+              <div key={paramName} className="grid grid-cols-2 gap-4 items-center">
+                <label className="text-sm font-medium capitalize">
+                  {paramName.replace(/_/g, ' ')}
+                </label>
+                <ParameterInput
+                  type={getParameterType(paramValue)}
+                  value={paramValue}
+                  onChange={(value) => handleParameterChange(rule.id, paramName, value)}
+                  className="bg-zinc-800"
+                />
+              </div>
+            ))}
+          </div>
         </div>
       ))}
     </div>
   );
-};
+}
 
 export default CleaningRulesConfig;

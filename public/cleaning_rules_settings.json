@@ -21,6 +21,7 @@
       "parameters": {
         "method": {
           "type": "string",
+          "required": true,
           "options": ["mean", "median", "mode"]
         },
         "columns": {
@@ -39,6 +40,7 @@
       "parameters": {
         "format": {
           "type": "string",
+          "required": true,
           "options": ["ICD-10", "ICD-9"]
         }
       },
@@ -52,26 +54,42 @@
       "parameters": {
         "criteria": {
           "type": "object",
+          "required": true,
           "properties": {
             "age": {
               "type": "object",
+              "required": true,
               "properties": {
-                "min": { "type": "number" },
-                "max": { "type": "number" }
+                "min": {
+                  "type": "number",
+                  "required": true
+                },
+                "max": {
+                  "type": "number",
+                  "required": true
+                }
               }
             },
             "bloodSugarLevel": {
               "type": "object",
               "properties": {
-                "max": { "type": "number" }
+                "max": {
+                  "type": "number",
+                  "required": true
+                }
               }
             }
           }
         }
       },
       "criteria": {
-        "age": { "min": 0, "max": 120 },
-        "bloodSugarLevel": { "max": 300 }
+        "age": {
+          "min": 0,
+          "max": 120
+        },
+        "bloodSugarLevel": {
+          "max": 300
+        }
       }
     },
     {
@@ -82,6 +100,7 @@
       "parameters": {
         "format": {
           "type": "string",
+          "required": true,
           "options": ["yyyy-MM-dd", "MM/dd/yyyy"]
         }
       },
@@ -119,8 +138,14 @@
       "operation": "regex_replace",
       "enabled": false,
       "parameters": {
-        "pattern": { "type": "string", "required": true },
-        "replacement": { "type": "string", "required": true }
+        "pattern": {
+          "type": "string",
+          "required": true
+        },
+        "replacement": {
+          "type": "string",
+          "required": true
+        }
       },
       "pattern": "",
       "replacement": ""
@@ -133,6 +158,7 @@
       "parameters": {
         "logFormat": {
           "type": "string",
+          "required": true,
           "options": ["text", "json"]
         }
       },
