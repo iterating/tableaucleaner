@@ -1,12 +1,12 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { TableauDataset } from '@/domain/entities/TableauData';
-import { CleaningRules } from '@/utils/cleaningRules';
+import { CleaningRule } from '@/types';
 
 
 interface DataPreviewProps {
   dataset: TableauDataset;
-  cleaningRules: CleaningRules | null;
+  cleaningRules: CleaningRule[] | null;
 }
 
 const DataPreview: React.FC<DataPreviewProps> = ({ dataset, cleaningRules }) => {

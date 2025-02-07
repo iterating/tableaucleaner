@@ -14,46 +14,19 @@ class TableauService {
   }
 
   async parseFile(file: File): Promise<TableauDataset> {
-    return new Promise((resolve, reject) => {
-      Papa.parse(file, {
-        complete: (results) => {
-          const headers = results.data[0] as string[];
-          const rawRows = results.data.slice(1) as string[][];
-          
-          // Convert string[][] to TableauRow[]
-          const rows = rawRows.map(row => {
-            const tableauRow: TableauRow = {};
-            headers.forEach((header, index) => {
-              tableauRow[header] = row[index] || '';
-            });
-            return tableauRow;
-          });
-          
-          resolve({
-            headers,
-            rows,
-            metadata: {
-              fileName: file.name,
-              rowCount: rows.length,
-              columnCount: headers.length,
-              uploadDate: new Date().toISOString()
-            }
-          });
-        },
-        error: (error) => {
-          reject(error);
-        }
-      });
-    });
+    return this.fileRepo.parseFile(file);
   }
 
   async getCleaningRules(): Promise<CleaningRule[]> {
     try {
-      const response = await fetch('/cleaning_rules_settings.json');
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/cleaning_rules_settings.json`);
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(`Failed to load rules: ${response.status} ${response.statusText}`);
       }
       const data = await response.json();
+      if (!data?.cleaningRules?.length) {
+        throw new Error('No cleaning rules found in settings');
+      }
       return data.cleaningRules;
     } catch (error) {
       console.error('Error loading cleaning rules:', error);

@@ -1,4 +1,5 @@
-import { TableauDataset, CleaningRule } from '../entities/TableauData';
+import { TableauDataset } from '../entities/TableauData';
+import { CleaningRule } from '@/types';
 
 export interface DataCleaningUseCase {
   cleanData(dataset: TableauDataset, rules: CleaningRule[]): Promise<TableauDataset>;

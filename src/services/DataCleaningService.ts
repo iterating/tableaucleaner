@@ -1,6 +1,7 @@
 import { TableauDataset, TableauRow, AgeRange } from '@/domain/entities/TableauData';
 import { DataCleaningUseCase } from '@/domain/usecases/DataCleaningUseCase';
 import { CleaningRule } from '@/types';
+import Papa from 'papaparse';
 
 export class DataCleaningService implements DataCleaningUseCase {
   async cleanData(dataset: TableauDataset, rules: CleaningRule[]): Promise<TableauDataset> {
@@ -20,7 +21,7 @@ export class DataCleaningService implements DataCleaningUseCase {
     return dataset.headers.length > 0 && dataset.rows.length > 0;
   }
 
-  static async exportData(dataset: TableauDataset, format: 'csv' | 'json'): Promise<Blob> {
+  async exportData(dataset: TableauDataset, format: 'csv' | 'json'): Promise<Blob> {
     if (format === 'csv') {
       const csv = Papa.unparse(dataset.rows);
       return new Blob([csv], { type: 'text/csv' });

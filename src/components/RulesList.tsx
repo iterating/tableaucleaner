@@ -1,16 +1,9 @@
 import { TableauDataset } from '@/domain/entities/TableauData';
+import { CleaningRule, CleaningOperationType } from '@/types';
 import { Button } from './ui/button';
 import { useState } from 'react';
 import { RuleConfigurationModal } from './RuleConfigurationModal'; 
 import settings from '../../public/cleaning_rules_settings.json';
-
-interface CleaningRule {
-  id: string;
-  type: string;
-  field: string;
-  operation: string;
-  parameters: Record<string, any>;
-}
 
 interface RulesListProps {
   rules: CleaningRule[];
@@ -25,10 +18,11 @@ export function RulesList({ rules, dataset, onAddRule }: RulesListProps) {
   const handleAddRule = (config: any) => {
     onAddRule({
       id: String(Date.now()),
-      type: selectedRuleType,
+      name: `${config.operation} on ${dataset.headers[0]}`,
       field: dataset.headers[0],
-      operation: config.operation,
-      parameters: config.parameters
+      operation: config.operation as CleaningOperationType,
+      parameters: config.parameters,
+      enabled: true
     });
   };
 

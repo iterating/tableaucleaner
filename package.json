@@ -9,8 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@radix-ui/react-dialog": "^1.1.6",
     "@radix-ui/react-slot": "",
-    "@radix-ui/react-dialog": "",
     "@types/node": "^20.17.14",
     "@types/papaparse": "^5.3.15",
     "autoprefixer": "^10.4.20",
