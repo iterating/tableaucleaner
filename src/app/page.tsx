@@ -183,7 +183,7 @@ export default function Home() {
             rel="noopener noreferrer"
             className="text-zinc-300 hover:text-zinc-100 transition-colors text-sm"
           >
-            Query Builder Sandbox App
+            | Query Builder Sandbox App
           </a>
         </div>
       </footer>
