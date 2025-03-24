@@ -27,35 +27,40 @@ export function RulesList({ rules, dataset, onAddRule }: RulesListProps) {
   };
 
   return (
-    <div className="bg-muted/50 p-4 rounded-lg border">
-      <h2 className="text-2xl font-semibold mb-4 flex items-center">
-        <span className="w-2 h-6 bg-blue-500 rounded mr-2"></span>
-        Cleaning Rules
-      </h2>
-      <ul className="space-y-2">
-        {rules.map(rule => (
-          <li 
-            key={rule.id} 
-            className="flex items-center justify-between p-3 rounded bg-background hover:bg-muted/20 transition-colors gap-4"
-          >
-            <span className="text-sm font-medium">{rule.name}</span>
-            <div className="flex gap-2 text-muted-foreground">
-              <span className="text-sm">Field: {rule.field}</span>
-              <span className="text-sm">•</span>
-              <span className="text-sm capitalize">{rule.operation.replace(/_/g, ' ')}</span>
-            </div>
-          </li>
-        ))}
-      </ul>
-      <div className="mt-4">
-        <Button
-          onClick={() => setShowConfigModal(true)}
-          variant="default"
-          className="w-full justify-center"
-        >
-          Add Rule
-        </Button>
-      </div>
+    <div>
+      {rules.length > 0 ? (
+        <ul className="space-y-3 mb-4">
+          {rules.map(rule => (
+            <li 
+              key={rule.id} 
+              className="flex items-center justify-between p-3 rounded-md bg-zinc-700/40 border border-zinc-600/50 hover:bg-zinc-700/70 transition-colors shadow-sm"
+            >
+              <div className="flex items-center">
+                <div className={`w-2 h-full min-h-[2rem] rounded-l-md mr-3 ${rule.enabled ? 'bg-blue-500' : 'bg-zinc-500'}`}></div>
+                <span className="text-sm font-medium text-zinc-200">{rule.name}</span>
+              </div>
+              <div className="flex flex-col md:flex-row gap-2 text-zinc-400">
+                <span className="text-xs px-2 py-1 rounded-full bg-zinc-800">Field: {rule.field}</span>
+                <span className="text-xs px-2 py-1 rounded-full bg-zinc-800 capitalize">{rule.operation.replace(/_/g, ' ')}</span>
+              </div>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <div className="text-center py-8 mb-4 bg-zinc-700/20 border border-dashed border-zinc-700 rounded-md">
+          <p className="text-zinc-400 text-sm">No cleaning rules added yet</p>
+          <p className="text-zinc-500 text-xs mt-1">Add your first rule to start cleaning the data</p>
+        </div>
+      )}
+      
+      <Button
+        onClick={() => setShowConfigModal(true)}
+        variant="default"
+        className="w-full justify-center bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 transition-all"
+      >
+        Add Rule
+      </Button>
+      
       {showConfigModal && (
         <RuleConfigurationModal
           ruleTypes={cleaningRulesSettings.cleaningRules.map(r => r.id)}

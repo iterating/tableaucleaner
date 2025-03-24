@@ -2,7 +2,7 @@
 
 Try it out
 
-[![](https://raw.githubusercontent.com/iterating/tableaucleaner/refs/heads/main/public/portfoio.tableaucleaner.qrcode.100.png)](https://tableaucleaner.vercel.app)
+[![](https://raw.githubusercontent.com/iterating/tableaucleaner/refs/heads/main/public/portfolio.tableaucleaner.qrcode.100.png)](https://tableaucleaner.vercel.app)
 
 
 A modern web application designed to clean and process Tableau data files efficiently. This tool helps users transform and standardize their Tableau CSV data according to customizable cleaning rules.
@@ -17,7 +17,7 @@ A modern web application designed to clean and process Tableau data files effici
 
 ## Screenshot  
 
-![](https://raw.githubusercontent.com/iterating/tableaucleaner/refs/heads/main/public/portfoio.tableaucleaner.screenshot.png)
+![](https://raw.githubusercontent.com/iterating/tableaucleaner/refs/heads/main/public/portfolio.tableaucleaner.screenshot.png)
 
 
 Created by Jonathan Young ([@iterating](https://github.com/iterating/))

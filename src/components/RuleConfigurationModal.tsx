@@ -176,12 +176,13 @@ export function RuleConfigurationModal({
                 }
               }}
               className={cn(
-                "w-full px-3 py-2 border rounded-md font-mono text-sm",
-                errors[name] && "border-red-500"
+                "w-full px-4 py-3 border rounded-md font-mono text-sm",
+                "min-h-[150px] resize-y transition-all duration-200",
+                "focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm hover:shadow",
+                errors[name] && "border-red-500 focus:ring-red-400"
               )}
-              required={schema.required}
-              rows={5}
-              placeholder="Enter JSON object"
+              rows={6}
+              spellCheck="false"
             />
             {errors[name] && (
               <p className="text-sm text-red-500 mt-1">{errors[name]}</p>

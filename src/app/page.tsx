@@ -91,53 +91,91 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-900 text-white-100">
-      <main className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent mb-8">Tableau Data Cleaner</h1>
+    <div className="min-h-screen bg-zinc-900 text-white-100 pb-16">
+      <header className="bg-zinc-800 border-b border-zinc-700 py-6 mb-8 shadow-md">
+        <div className="container mx-auto px-4">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+            Tableau Data Cleaner
+          </h1>
+          <p className="text-zinc-400 mt-2">Upload, clean, and export your Tableau data files with ease</p>
+        </div>
+      </header>
 
-        <div className="space-y-8">
-          <section>
-            <h2 className="text-2xl font-semibold mb-4">Upload Data</h2>
-            <FileUpload onUpload={handleFileUpload} isProcessing={isProcessing} />
-          </section>
+      <main className="container mx-auto px-4 max-w-7xl">
+        <section className="bg-zinc-800 rounded-lg p-6 shadow-lg mb-8">
+          <h2 className="text-2xl font-semibold mb-4">
+            Upload Data
+          </h2>
+          <FileUpload onUpload={handleFileUpload} isProcessing={isProcessing} />
+        </section>
 
-          {error && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-              {error}
+        {error && (
+          <div className="bg-red-900/20 border border-red-500/50 text-red-200 px-4 py-3 rounded-md mb-6 shadow-sm backdrop-blur-sm">
+            {error}
+          </div>
+        )}
+
+        {successMessage && (
+          <div className="bg-green-900/20 border border-green-500/50 text-green-200 px-4 py-3 rounded-md mb-6 shadow-sm backdrop-blur-sm">
+            {successMessage}
+          </div>
+        )}
+
+        {dataset && (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <div className="lg:col-span-1">
+              <div className="bg-zinc-800 rounded-lg shadow-lg h-full flex flex-col">
+                <div className="border-b border-zinc-700 p-4">
+                  <h2 className="text-xl font-semibold">
+                    Cleaning Rules
+                  </h2>
+                </div>
+                
+                <div className="p-4 flex-grow overflow-auto">
+                  <RulesList 
+                    rules={cleaningRules} 
+                    dataset={dataset} 
+                    onAddRule={(rule: CleaningRule) => {
+                      const newRule = {
+                        ...rule,
+                        type: rule.operation as CleaningOperationType,
+                        enabled: true
+                      };
+                      addRule(newRule);
+                    }} 
+                  />
+                </div>
+                
+                <div className="border-t border-zinc-700 p-4">
+                  <CleaningRulesConfig
+                    rules={cleaningRules}
+                    onRulesChange={handleRulesChange}
+                  />
+                </div>
+              </div>
             </div>
-          )}
 
-          {successMessage && (
-            <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-              {successMessage}
-            </div>
-          )}
-
-          {dataset && cleaningRules.length > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="bg-zinc-800 rounded-lg p-6 shadow-lg">
-                <CleaningRulesConfig
-                  rules={cleaningRules}
-                  onRulesChange={handleRulesChange}
-                />
-                <RulesList 
-                  rules={cleaningRules} 
-                  dataset={dataset} 
-                  onAddRule={(rule: CleaningRule) => {
-                    const newRule = {
-                      ...rule,
-                      type: rule.operation as CleaningOperationType,
-                      enabled: true
-                    };
-                    addRule(newRule);
-                  }} 
-                />
-                <div className="mt-4 space-x-4">
+            <div className="lg:col-span-2">
+              <div className="bg-zinc-800 rounded-lg shadow-lg h-full flex flex-col">
+                <div className="border-b border-zinc-700 p-4">
+                  <h2 className="text-xl font-semibold">
+                    Data Preview
+                  </h2>
+                </div>
+                
+                <div className="p-4 flex-grow overflow-auto">
+                  <DataPreview 
+                    dataset={cleanedDataset || dataset} 
+                    cleaningRules={cleaningRules} 
+                  />
+                </div>
+                
+                <div className="border-t border-zinc-700 p-4 flex flex-wrap gap-3">
                   <Button
                     onClick={() => handleExport('csv')}
                     disabled={!cleanedDataset}
                     className={cn(
-                      'bg-blue-500 hover:bg-blue-600',
+                      'bg-blue-600 hover:bg-blue-700 transition-colors',
                       !cleanedDataset && 'opacity-50 cursor-not-allowed'
                     )}
                   >
@@ -147,7 +185,7 @@ export default function Home() {
                     onClick={() => handleExport('json')}
                     disabled={!cleanedDataset}
                     className={cn(
-                      'bg-green-500 hover:bg-green-600',
+                      'bg-green-600 hover:bg-green-700 transition-colors',
                       !cleanedDataset && 'opacity-50 cursor-not-allowed'
                     )}
                   >
@@ -155,25 +193,18 @@ export default function Home() {
                   </Button>
                 </div>
               </div>
-
-              <div className="bg-zinc-800 rounded-lg p-6 shadow-lg">
-                <DataPreview 
-                  dataset={cleanedDataset || dataset} 
-                  cleaningRules={cleaningRules} 
-                />
-              </div>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </main>
 
-      <footer className="fixed bottom-0 w-full bg-zinc-800 border-t border-zinc-700 py-4">
+      <footer className="fixed bottom-0 w-full bg-zinc-800 border-t border-zinc-700 py-3 shadow-lg z-10">
         <div className="container mx-auto px-4 text-center">
           <a 
             href="https://github.com/iterating" 
             target="_blank" 
             rel="noopener noreferrer"
-            className="text-zinc-300 hover:text-zinc-100 transition-colors text-sm mr-2"
+            className="text-zinc-400 hover:text-zinc-100 transition-colors text-sm mr-2"
           >
             Designed and Built by Jonathan Young (iterating)
           </a>
@@ -181,7 +212,7 @@ export default function Home() {
             href="https://querybuilder.vercel.app/" 
             target="_blank" 
             rel="noopener noreferrer"
-            className="text-zinc-300 hover:text-zinc-100 transition-colors text-sm"
+            className="text-zinc-400 hover:text-zinc-100 transition-colors text-sm"
           >
             | Query Builder Sandbox App
           </a>
