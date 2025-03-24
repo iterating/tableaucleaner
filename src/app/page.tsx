@@ -11,6 +11,28 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/utils/utils';
 import { applyCleaningRules } from '@/utils/cleaningRules';
 
+// Common style patterns
+const styles = {
+  container: "container mx-auto px-4 max-w-[1800px]",
+  card: "bg-zinc-800 rounded-lg shadow-lg",
+  cardHeader: "border-b border-zinc-700 p-4",
+  cardBody: "p-4 flex-grow overflow-auto",
+  heading: {
+    xl: "text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent",
+    lg: "text-2xl font-semibold mb-4",
+    md: "text-xl font-semibold"
+  },
+  alert: {
+    error: "bg-red-900/20 border border-red-500/50 text-red-200 px-4 py-3 rounded-md shadow-sm backdrop-blur-sm",
+    success: "bg-green-900/20 border border-green-500/50 text-green-200 px-4 py-3 rounded-md shadow-sm backdrop-blur-sm"
+  },
+  button: {
+    primary: "bg-blue-600 hover:bg-blue-700 transition-colors",
+    secondary: "bg-green-600 hover:bg-green-700 transition-colors",
+    disabled: "opacity-50 cursor-not-allowed"
+  }
+};
+
 export default function Home() {
   const [dataset, setDataset] = useState<TableauDataset | null>(null);
   const [cleaningRules, setCleaningRules] = useState<CleaningRule[]>([]);
@@ -92,46 +114,47 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-zinc-900 text-white-100 pb-16">
-      <header className="bg-zinc-800 border-b border-zinc-700 py-6 mb-8 shadow-md">
-        <div className="container mx-auto px-4">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+      <header className={cn(styles.card, "border-b border-zinc-700 py-6 mb-8 shadow-md")}>
+        <div className={styles.container}>
+          <h1 className={styles.heading.xl}>
             Tableau Data Cleaner
           </h1>
           <p className="text-zinc-400 mt-2">Upload, clean, and export your Tableau data files with ease</p>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 max-w-7xl">
-        <section className="bg-zinc-800 rounded-lg p-6 shadow-lg mb-8">
-          <h2 className="text-2xl font-semibold mb-4">
+      <main className={styles.container}>
+        <section className={cn(styles.card, "p-6 mb-8")}>
+          <h2 className={styles.heading.lg}>
             Upload Data
           </h2>
           <FileUpload onUpload={handleFileUpload} isProcessing={isProcessing} />
         </section>
 
         {error && (
-          <div className="bg-red-900/20 border border-red-500/50 text-red-200 px-4 py-3 rounded-md mb-6 shadow-sm backdrop-blur-sm">
+          <div className={cn(styles.alert.error, "mb-6")}>
             {error}
           </div>
         )}
 
         {successMessage && (
-          <div className="bg-green-900/20 border border-green-500/50 text-green-200 px-4 py-3 rounded-md mb-6 shadow-sm backdrop-blur-sm">
+          <div className={cn(styles.alert.success, "mb-6")}>
             {successMessage}
           </div>
         )}
 
         {dataset && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-            <div className="lg:col-span-1">
-              <div className="bg-zinc-800 rounded-lg shadow-lg h-full flex flex-col">
-                <div className="border-b border-zinc-700 p-4">
-                  <h2 className="text-xl font-semibold">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div>
+              {/* First column - Rules and Configuration */}
+              <div className={cn(styles.card, "mb-6")}>
+                <div className={styles.cardHeader}>
+                  <h2 className={styles.heading.md}>
                     Cleaning Rules
                   </h2>
                 </div>
                 
-                <div className="p-4 flex-grow overflow-auto">
+                <div className={styles.cardBody}>
                   <RulesList 
                     rules={cleaningRules} 
                     dataset={dataset} 
@@ -145,8 +168,16 @@ export default function Home() {
                     }} 
                   />
                 </div>
+              </div>
+
+              <div className={cn(styles.card)}>
+                <div className={styles.cardHeader}>
+                  <h2 className={styles.heading.md}>
+                    Configuration
+                  </h2>
+                </div>
                 
-                <div className="border-t border-zinc-700 p-4">
+                <div className={styles.cardBody}>
                   <CleaningRulesConfig
                     rules={cleaningRules}
                     onRulesChange={handleRulesChange}
@@ -155,15 +186,16 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="lg:col-span-2">
-              <div className="bg-zinc-800 rounded-lg shadow-lg h-full flex flex-col">
-                <div className="border-b border-zinc-700 p-4">
-                  <h2 className="text-xl font-semibold">
+            <div>
+              {/* Second column - Data Preview */}
+              <div className={cn(styles.card, "h-full flex flex-col")}>
+                <div className={styles.cardHeader}>
+                  <h2 className={styles.heading.md}>
                     Data Preview
                   </h2>
                 </div>
                 
-                <div className="p-4 flex-grow overflow-auto">
+                <div className={styles.cardBody}>
                   <DataPreview 
                     dataset={cleanedDataset || dataset} 
                     cleaningRules={cleaningRules} 
@@ -175,8 +207,8 @@ export default function Home() {
                     onClick={() => handleExport('csv')}
                     disabled={!cleanedDataset}
                     className={cn(
-                      'bg-blue-600 hover:bg-blue-700 transition-colors',
-                      !cleanedDataset && 'opacity-50 cursor-not-allowed'
+                      styles.button.primary,
+                      !cleanedDataset && styles.button.disabled
                     )}
                   >
                     Export as CSV
@@ -185,8 +217,8 @@ export default function Home() {
                     onClick={() => handleExport('json')}
                     disabled={!cleanedDataset}
                     className={cn(
-                      'bg-green-600 hover:bg-green-700 transition-colors',
-                      !cleanedDataset && 'opacity-50 cursor-not-allowed'
+                      styles.button.secondary,
+                      !cleanedDataset && styles.button.disabled
                     )}
                   >
                     Export as JSON
@@ -199,9 +231,10 @@ export default function Home() {
       </main>
 
       <footer className="fixed bottom-0 w-full bg-zinc-800 border-t border-zinc-700 py-3 shadow-lg z-10">
-        <div className="container mx-auto px-4 text-center">
-          <a 
-            href="https://github.com/iterating" 
+        <div className={styles.container}>
+          <p className="text-center text-zinc-400 text-sm">
+            Tableau Data Cleaner |           <a 
+            href="https://iterating.github.io" 
             target="_blank" 
             rel="noopener noreferrer"
             className="text-zinc-400 hover:text-zinc-100 transition-colors text-sm mr-2"
@@ -216,6 +249,7 @@ export default function Home() {
           >
             | Query Builder Sandbox App
           </a>
+          </p>
         </div>
       </footer>
     </div>
