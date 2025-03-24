@@ -1,7 +1,7 @@
 'use client';
 import { TableauDataset, CleaningRule } from '@/types';
 import { Button } from './ui/button';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { RuleConfigurationModal } from './RuleConfigurationModal'; 
 import settings from '../../public/cleaning_rules_settings.json';
 import { CleaningRulesSettings, createCleaningRule } from '@/types/cleaningRules';
@@ -16,6 +16,7 @@ interface RulesListProps {
 
 export function RulesList({ rules, dataset, onAddRule }: RulesListProps) {
   const [showConfigModal, setShowConfigModal] = useState(false);
+  const addRuleButtonRef = useRef<HTMLButtonElement>(null);
 
   const handleAddRule = (config: { type: string; parameters: any }) => {
     const defaultField = dataset.headers.length > 0 ? dataset.headers[0] : 'unknown_field';
@@ -57,6 +58,7 @@ export function RulesList({ rules, dataset, onAddRule }: RulesListProps) {
         onClick={() => setShowConfigModal(true)}
         variant="default"
         className="w-full justify-center bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 transition-all"
+        ref={addRuleButtonRef}
       >
         Add Rule
       </Button>
@@ -66,6 +68,7 @@ export function RulesList({ rules, dataset, onAddRule }: RulesListProps) {
           ruleTypes={cleaningRulesSettings.cleaningRules.map(r => r.id)}
           onConfigure={handleAddRule}
           onClose={() => setShowConfigModal(false)}
+          buttonRef={addRuleButtonRef}
         />
       )}
     </div>
